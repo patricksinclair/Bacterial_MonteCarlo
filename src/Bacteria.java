@@ -5,17 +5,24 @@ public class Bacteria {
     //m corresponds to the current genotype of the bacterium
     private int m;
     //finalM is the total no. of genotypes in this evolutionary path
-    private final int finalM = 6;
+    private int finalM;
     private final int initialM = 1;
     //migration rate: probability the bacterium migrates from one microhabitat to a neighbouring one
     private double b = 0.1;
     //death rate
     private double d = 0.1;
     //mutation rate
-    private double mu = 5e-6;
+    private double mu = 1e-4;
 
     public Bacteria(int m){
         this.m = m;
+        this.finalM = 6;
+    }
+
+    //this constructor allows for the length of the mutational pathways to be specified
+    public Bacteria(int m, int finalM){
+        this.m = m;
+        this.finalM = finalM;
     }
 
     //get and sets for genotype

@@ -42,7 +42,48 @@ public class BioSystem {
     public BioSystem(int L, int K, double alpha, double c){
         this.L = L;
         this.K = K;
-        t
+        this.alpha = 0.;
+        this.c = c;
+        this.microhabitats = new Microhabitat[L];
+        this.timeElapsed = 0;
+        this.resistanceReached = false;
+
+        for(int i = 0; i < L; i++){
+            microhabitats[i] = new Microhabitat(K, c);
+        }
+        microhabitats[0].fillWithWildType();
+    }
+
+    //This constructor allows for the length of the bacteria's mutational pathway to be specified
+    public BioSystem(int L, int K, double alpha, int finalGenotype){
+        this.L = L;
+        this.K = K;
+        this.alpha = alpha;
+        this.microhabitats = new Microhabitat[L];
+        this.timeElapsed = 0.;
+        this.resistanceReached = false;
+
+        for(int i = 0; i < L; i++){
+
+            double c_i = Math.exp(alpha*(double)i) - 1.;
+            microhabitats[i] = new Microhabitat(K, c_i);
+        }
+        microhabitats[0].fillWithWildType(finalGenotype);
+    }
+
+    public BioSystem(int L, int K, double alpha, double c, int finalGenotype){
+        this.L = L;
+        this.K = K;
+        this.alpha = 0.;
+        this.c = c;
+        this.microhabitats = new Microhabitat[L];
+        this.timeElapsed = 0;
+        this.resistanceReached = false;
+
+        for(int i = 0; i < L; i++){
+            microhabitats[i] = new Microhabitat(K, c);
+        }
+        microhabitats[0].fillWithWildType(finalGenotype);
     }
 
 
@@ -66,11 +107,9 @@ public class BioSystem {
     //returns the total number of bacteria in the system
     public int getCurrentPopulation(){
         int runningTotal = 0;
-
+        //removed if statement
         for(int i = 0; i < L; i++){
-            if(microhabitats[i].getN() > 0){
                 runningTotal += microhabitats[i].getN();
-            }
         }
         return runningTotal;
     }
@@ -112,6 +151,7 @@ public class BioSystem {
         //the bacterium which is going to be replicated and its associated genotype
         Bacteria parentBac = microhabitats[currentL].getBacteria(bacteriumIndex);
         int m = parentBac.getM();
+        int finalM = parentBac.getFinalM();
 
         //only allows replication if the habitat isn't at carrying capacity
         if(microhabitats[currentL].getN() < microhabitats[currentL].getK()) {
@@ -120,7 +160,7 @@ public class BioSystem {
             double mu = parentBac.getMu();
             double s = rand.nextDouble();
 
-            Bacteria childBac = new Bacteria(m);
+            Bacteria childBac = new Bacteria(m, finalM);
             if(s < mu/2.) {
                 childBac.increaseGenotype();
             } else if(s >= mu/2. && s < mu) {
@@ -185,11 +225,11 @@ public class BioSystem {
 
             bs.performAction();
 
-            /*if(counter%1000 == 0){
+            if(counter%1000 == 0){
                 for(int i = 0; i < L; i++){
                     System.out.println("Habitat "+(i+1)+": "+bs.microhabitats[i].getN());
                 }
-            }*/
+            }
 
             counter++;
         }
@@ -237,6 +277,57 @@ public class BioSystem {
         System.out.println("Experiment complete");
     }
 
+
+
+    public static void mutationalPathLengthExperiment(){
+
+        int L = 300;
+        int K = 100;
+        double alpha = 0.07;
+        double c = 0.9;
+
+        //initial and final values for mutational path length
+        int initMutPL = 2;
+        int finalMutPL = 16;
+        int nVals = finalMutPL - initMutPL;
+        int nReps = 10;
+
+        String filename_exp = "TTR_f(m)_alpha";
+        String filename_const = "TTR_f(m)_const";
+
+        ArrayList<Double> mVals_exp = new ArrayList<Double>(nVals);
+        ArrayList<Double>  tVals_exp = new ArrayList<Double>(nVals);
+        ArrayList<Double>  mVals_const = new ArrayList<Double>(nVals);
+        ArrayList<Double>  tVals_const = new ArrayList<Double>(nVals);
+
+        for(int m = initMutPL; m < finalMutPL; m++){
+
+            double t_exp = 0.;
+            double t_const = 0.;
+
+            for(int i = 0; i < nReps; i++){
+                BioSystem bs_exp = new BioSystem(L, K, alpha, m);
+                BioSystem bs_const = new BioSystem(L, K, alpha, c, m);
+
+                while(!bs_exp.getResistanceReached()) bs_exp.performAction();
+                t_exp += bs_exp.getTimeElapsed();
+                System.out.println("m = "+m+" rep = "+i+" exp");
+
+                while(!bs_const.getResistanceReached()) bs_const.performAction();
+                t_const += bs_const.getTimeElapsed();
+                System.out.println("m = "+m+" rep = "+i+" const");
+            }
+
+            mVals_exp.add((double)m);
+            tVals_exp.add(t_exp/(double)nReps);
+
+            mVals_const.add((double)m);
+            tVals_const.add(t_const/(double)nReps);
+        }
+
+       Toolbox.write2ArrayListsToFile(mVals_exp, tVals_exp, filename_exp);
+       Toolbox.write2ArrayListsToFile(mVals_const, tVals_const, filename_const);
+    }
 
 
 }

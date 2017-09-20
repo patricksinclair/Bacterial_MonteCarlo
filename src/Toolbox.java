@@ -27,4 +27,24 @@ public class Toolbox {
         }catch (IOException e){}
     }
 
+
+    public static void write2ArraysToFile(double[] xVals, double[] yVals, String filename){
+
+
+        try {
+            File file = new File(filename+".txt");
+
+            if(!file.exists()) file.createNewFile();
+
+            FileWriter fw = new FileWriter(file.getAbsoluteFile());
+            BufferedWriter bw = new BufferedWriter(fw);
+
+            for(int i = 0; i < xVals.length; i ++){
+                String output = String.valueOf(xVals[i]) + ", " + String.valueOf(yVals[i]);
+                bw.write(output);
+                bw.newLine();
+            }
+            bw.close();
+        }catch (IOException e){}
+    }
 }

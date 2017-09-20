@@ -68,6 +68,17 @@ public class Microhabitat {
     }
 
 
+    public void fillWithWildType(int finalGenotype){
+
+        int initGenotype = 1;
+
+        for(int i = 0; i < K; i++){
+            population.add(new Bacteria(initGenotype, finalGenotype));
+        }
+    }
+
+
+
     public void removeABacterium(int i){
         population.remove(i);
     }
