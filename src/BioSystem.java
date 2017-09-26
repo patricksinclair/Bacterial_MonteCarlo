@@ -126,10 +126,8 @@ public class BioSystem {
     //migrates a specific bacterium to the next microhabitat
     public void migrate(int currentL, int bacteriumIndex){
 
-        //ensures that migration can't occur past the last habitat and migration can't happen to habitats
-        //which are at capacity
-        if(currentL < (L-1) &&
-                (microhabitats[currentL+1].getN() < microhabitats[currentL+1].getK())) {
+        //ensures that migration can't occur past the last habitat
+        if(currentL < (L-1)){
 
             ArrayList<Bacteria> source = microhabitats[currentL].getPopulation();
             ArrayList<Bacteria> destination = microhabitats[currentL + 1].getPopulation();
@@ -232,7 +230,8 @@ public class BioSystem {
 
             if(counter%1000 == 0){
                 for(int i = 0; i < L; i++){
-                    System.out.println("Habitat "+(i+1)+": "+bs.microhabitats[i].getN());
+                    if(bs.microhabitats[i].getN() > bs.microhabitats[i].getK()) System.out.println("Overflow "+i+
+                    ": "+bs.microhabitats[i].getN());
                 }
             }
 

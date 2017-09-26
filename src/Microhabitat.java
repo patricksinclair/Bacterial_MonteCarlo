@@ -6,6 +6,10 @@ public class Microhabitat {
     private int K;
     //this is the concentration of antibiotic present in the microhabitat
     private double c;
+    //the amount of food nutrients present (s for sustenance)
+    private int S;
+    //factor used in nutirent growth rate calculations
+    private double K_prime = 33.;
     //arraylist used to store the bacteria
     private ArrayList<Bacteria> population;
 
@@ -23,6 +27,10 @@ public class Microhabitat {
         this.population = new ArrayList<Bacteria>(K);
     }
 
+    public Microhabitat(int K, double c, int S){
+        this(K, c);
+        this.S = S;
+    }
 
     public int getK(){return K;}
     public void setK(int K){
@@ -33,6 +41,12 @@ public class Microhabitat {
     public void setC(double c){
         this.c = c;
     }
+
+    public double getK_prime(){return K_prime;}
+    public void setK_prime(double K_prime){this.K_prime = K_prime;}
+
+    public int getS(){return S;}
+    public void setS(int S){this.S = S;}
 
     public int getN(){
         return population.size();

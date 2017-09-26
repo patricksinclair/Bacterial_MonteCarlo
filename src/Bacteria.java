@@ -81,6 +81,11 @@ public class Bacteria {
         return growthRate(c)*(1. - (double)(N/K));
     }
 
+    public double replicationRate_Nutrients(double c, double K_prime, int S){
+
+        return growthRate(c)*((double)S/(K_prime + (double)S));
+    }
+
 
     public void increaseGenotype(){
         if(m < finalM){
