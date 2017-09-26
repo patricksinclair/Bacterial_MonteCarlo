@@ -95,6 +95,9 @@ public class Microhabitat {
         }
     }
 
+    public void consumeNutrients(){
+        S = S - 1;
+    }
 
 
     public void removeABacterium(int i){

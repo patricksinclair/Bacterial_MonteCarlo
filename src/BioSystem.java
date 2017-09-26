@@ -86,6 +86,8 @@ public class BioSystem {
         microhabitats[0].fillWithWildType(finalGenotype);
     }
 
+    public BioSystem(){}
+
 
     public int getL(){return L;}
     public void setL(int L){this.L = L;}
