@@ -9,6 +9,10 @@ public class Microhabitat {
     //arraylist used to store the bacteria
     private ArrayList<Bacteria> population;
 
+    public Microhabitat(){
+
+    }
+
     public Microhabitat(int K){
         this.K = K;
     }

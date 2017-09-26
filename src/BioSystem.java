@@ -176,31 +176,36 @@ public class BioSystem {
 
     public void performAction(){
 
-        //selects a random microhabitat from the system, but only if it's populated
-        int microHabIndex = rand.nextInt(L);
-        Microhabitat randMicroHab = getMicrohabitat(microHabIndex);
+        //selects a random bacteria from the total population
+        int randomIndex = rand.nextInt(getCurrentPopulation());
+        int indexCounter = 0;
+        int microHabIndex = 0;
+        int bacteriaIndex = 0;
 
-        whileloop:
-        while(true) {
+       forloop:
+       for(int i = 0; i < getL(); i++){
 
-            microHabIndex = rand.nextInt(L);
-            randMicroHab = getMicrohabitat(microHabIndex);
+           if((indexCounter + microhabitats[i].getN()) < randomIndex){
 
-            if(randMicroHab.getN() > 0) break whileloop;
-        }
+               indexCounter += microhabitats[i].getN();
+               continue forloop;
+           }
+           else{
+               microHabIndex = i;
+               bacteriaIndex = randomIndex - indexCounter;
+               if(bacteriaIndex > 0) bacteriaIndex -= 1;
+               break forloop;
+           }
+       }
 
-        //System.out.println("microhab pop rand "+microHabIndex+": "+ randMicroHab.getN());
-        //selects a random bacteria from the random microhabitat
-        int N = randMicroHab.getN(), K = randMicroHab.getK();
-        double c = randMicroHab.getC();
-        int bacteriaIndex = rand.nextInt(N);
-        Bacteria randBac =  randMicroHab.getBacteria(bacteriaIndex);
+        Microhabitat randMicroHab = microhabitats[microHabIndex];
+        int N = randMicroHab.getN(), K = randMicroHab.getK(); double c = randMicroHab.getC();
+        Bacteria randBac = randMicroHab.getBacteria(bacteriaIndex);
 
         double migRate = randBac.getB();
         double deaRate = randBac.getD();
         double repliRate = randBac.replicationRate(c, N, K);
         double R_max = 1.2;
-
         double rando = rand.nextDouble()*R_max;
 
         if(rando < migRate) migrate(microHabIndex, bacteriaIndex);
