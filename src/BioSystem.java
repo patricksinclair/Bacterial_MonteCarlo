@@ -128,11 +128,20 @@ public class BioSystem {
     //migrates a specific bacterium to the next microhabitat
     public void migrate(int currentL, int bacteriumIndex){
 
-        //ensures that migration can't occur past the last habitat
-        if(currentL < (L-1)){
+        double direction = rand.nextDouble();
+
+        if(direction < 0.5 && currentL < (L - 1)) {
+
 
             ArrayList<Bacteria> source = microhabitats[currentL].getPopulation();
             ArrayList<Bacteria> destination = microhabitats[currentL + 1].getPopulation();
+
+            destination.add(source.remove(bacteriumIndex));
+
+        }else if(direction > 0.5 && currentL > (0)){
+
+            ArrayList<Bacteria> source = microhabitats[currentL].getPopulation();
+            ArrayList<Bacteria> destination = microhabitats[currentL - 1].getPopulation();
 
             destination.add(source.remove(bacteriumIndex));
         }
